@@ -36,8 +36,9 @@ install -Dm644 /ctx/kmod/modprobe-blacklist.conf /usr/lib/modprobe.d/mt7902-blac
 depmod -a "${KVER}"
 
 echo ">>> Validando módulos compilados:"
-for ko in /lib/modules/${KVER}/extra/mt7902e.ko* /lib/modules/${KVER}/extra/btusb_mt7902.ko*; do
-    test -f "${ko}"
+for modname in mt7902e btusb_mt7902; do
+    ko=$(find "/lib/modules/${KVER}" -name "${modname}.ko*" -print -quit)
+    test -n "${ko}" || { echo "FALHA: ${modname}.ko não encontrado em /lib/modules/${KVER}"; exit 1; }
     modinfo "${ko}" | grep -E "^vermagic:" | grep -qF "${KVER}"
     echo "  OK: ${ko}"
 done

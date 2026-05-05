@@ -11,18 +11,17 @@ source /ctx/kmod/pins.env
 KVER="$(rpm -q kernel-core --queryformat='%{VERSION}-%{RELEASE}.%{ARCH}\n' | head -1)"
 echo ">>> Target kernel: ${KVER}"
 
-# Build deps. Removidos no fim do mesmo RUN para não inflar a imagem.
+# Build deps. kernel-devel pinado à versão exata do kernel-core da imagem base.
+# Removidos no fim do mesmo RUN para não inflar a imagem.
 dnf5 install -y \
-    "kernel-devel-matching" \
+    "kernel-devel-${KVER}" \
     gcc \
     make \
     git-core \
     findutils \
     kmod \
     diffutils \
-    patch \
-    xz \
-    zstd
+    patch
 
 # Sanity: kernel-devel precisa apontar para o KVER detectado.
 test -d "/lib/modules/${KVER}/build"
@@ -45,10 +44,7 @@ done
 
 # Cleanup agressivo na MESMA layer.
 dnf5 remove -y \
-    kernel-devel-matching \
-    gcc \
-    make \
-    git-core \
+    "kernel-devel-${KVER}" \
     diffutils \
     patch
 dnf5 autoremove -y

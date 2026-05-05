@@ -43,18 +43,23 @@ for modname in mt7902e btusb_mt7902; do
     echo "  OK: ${ko}"
 done
 
-# Cleanup. Crítico: NÃO remover kernel-devel sem reconciliar a policy SELinux
-# depois — caso contrário o ostree-finalize-staged.service falha em
-# "Finalizing SELinux policy: failed to run semodule" no primeiro boot e o
-# rebase é revertido. Garantimos policycoreutils + semodule -B + restorecon
-# antes de qualquer rm -rf agressivo.
+# Cleanup CIRÚRGICO. NÃO usar `dnf5 autoremove` num build derivado de imagem
+# ublue completa — ele classifica pacotes do KDE/Plasma (Breeze, plasma-workspace,
+# kf6-*, qt6-*) como "weakdeps órfãs" e os remove, deixando a imagem com SDDM
+# em tema padrão Fedora e desktop quebrado. Removemos APENAS o que instalamos.
+#
+# Também reconciliamos a SELinux policy store antes do rm -rf, senão o
+# ostree-finalize-staged.service falha em "Finalizing SELinux policy: failed
+# to run semodule" e o rebase é revertido.
 dnf5 remove -y \
     "kernel-devel-${KVER}" \
+    gcc \
+    make \
+    git-core \
     diffutils \
     patch
-dnf5 autoremove -y
 
-# Reconcilia store de policy SELinux (anti-rebase-rollback)
+# Reconcilia store SELinux e garante policycoreutils presente
 dnf5 install -y policycoreutils selinux-policy selinux-policy-targeted libsemanage
 semodule -B
 restorecon -RF /usr/lib/modules /usr/lib/firmware /usr/lib/modprobe.d || true
@@ -62,3 +67,8 @@ restorecon -RF /usr/lib/modules /usr/lib/firmware /usr/lib/modprobe.d || true
 dnf5 clean all
 # Mantém /etc/selinux, /usr/share/selinux, /var/lib/selinux intactos.
 rm -rf /var/cache/dnf /var/tmp/* /usr/src/kernels/* /tmp/mt7902-*
+
+# Sanity final: confirma que pacotes essenciais do desktop NÃO foram removidos
+for pkg in plasma-workspace plasma-breeze sddm-breeze policycoreutils NetworkManager; do
+    rpm -q "${pkg}" >/dev/null || { echo "FALHA: ${pkg} ausente — build comprometeu desktop"; exit 1; }
+done

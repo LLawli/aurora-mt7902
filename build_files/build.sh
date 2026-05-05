@@ -43,11 +43,22 @@ for modname in mt7902e btusb_mt7902; do
     echo "  OK: ${ko}"
 done
 
-# Cleanup agressivo na MESMA layer.
+# Cleanup. Crítico: NÃO remover kernel-devel sem reconciliar a policy SELinux
+# depois — caso contrário o ostree-finalize-staged.service falha em
+# "Finalizing SELinux policy: failed to run semodule" no primeiro boot e o
+# rebase é revertido. Garantimos policycoreutils + semodule -B + restorecon
+# antes de qualquer rm -rf agressivo.
 dnf5 remove -y \
     "kernel-devel-${KVER}" \
     diffutils \
     patch
 dnf5 autoremove -y
+
+# Reconcilia store de policy SELinux (anti-rebase-rollback)
+dnf5 install -y policycoreutils selinux-policy selinux-policy-targeted libsemanage
+semodule -B
+restorecon -RF /usr/lib/modules /usr/lib/firmware /usr/lib/modprobe.d || true
+
 dnf5 clean all
-rm -rf /var/cache/dnf /var/lib/dnf/history.* /var/tmp/* /usr/src/kernels/* /tmp/mt7902-*
+# Mantém /etc/selinux, /usr/share/selinux, /var/lib/selinux intactos.
+rm -rf /var/cache/dnf /var/tmp/* /usr/src/kernels/* /tmp/mt7902-*

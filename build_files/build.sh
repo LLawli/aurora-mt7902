@@ -51,13 +51,10 @@ done
 # Também reconciliamos a SELinux policy store antes do rm -rf, senão o
 # ostree-finalize-staged.service falha em "Finalizing SELinux policy: failed
 # to run semodule" e o rebase é revertido.
-dnf5 remove -y \
-    "kernel-devel-${KVER}" \
-    gcc \
-    make \
-    git-core \
-    diffutils \
-    patch
+# Removemos APENAS kernel-devel (~200MB, específico da versão e sem reverse-deps).
+# gcc/make/git-core/diffutils/patch são deps reversas de pacotes do KDE/Plasma
+# da Aurora base; tentar removê-los cascata e leva plasma-workspace junto.
+dnf5 remove -y "kernel-devel-${KVER}"
 
 # Reconcilia store SELinux e garante policycoreutils presente
 dnf5 install -y policycoreutils selinux-policy selinux-policy-targeted libsemanage

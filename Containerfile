@@ -1,14 +1,16 @@
+# ARGs globais (antes do primeiro FROM) — usáveis no FROM dos estágios.
+# Defaults preservam o comportamento original do repo (build sem args = aurora-mt7902).
+ARG BASE_IMAGE=ghcr.io/ublue-os/aurora:stable
+ARG VARIANT=aurora
+
 # Allow build scripts to be referenced without being copied into the final image
 FROM scratch AS ctx
 COPY build_files /
 COPY signing /signing
 COPY system_files /system_files
 
-# Base Image — parametrizada para permitir builds tanto Aurora (KDE) quanto
-# Bluefin DX (GNOME) a partir do mesmo Containerfile. Defaults preservam o
-# comportamento original do repo (build sem args = aurora-mt7902).
-ARG BASE_IMAGE=ghcr.io/ublue-os/aurora:stable
-ARG VARIANT=aurora
+# Base Image — parametrizada via BASE_IMAGE para permitir builds tanto Aurora
+# (KDE) quanto Bluefin DX (GNOME) a partir do mesmo Containerfile.
 FROM ${BASE_IMAGE}
 
 # Re-declarar ARGs após FROM para escopo do estágio final.

@@ -22,7 +22,7 @@ Boot ativo.
 
 3. Adicionar a privada como secret no GitHub:
    ```bash
-   base64 -w0 mt7902-signing.priv | gh secret set MT7902_SIGNING_KEY -R llawli/aurora-mt7902
+   base64 -w0 mt7902-signing.priv | gh secret set MT7902_SIGNING_KEY -R llawli/uBlue-mt7902
    ```
 
 4. Apagar a privada local:

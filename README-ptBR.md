@@ -29,7 +29,7 @@ Versões pinadas em [`build_files/kmod/pins.env`](build_files/kmod/pins.env). Bu
 ```bash
 # Passo 1 — confiar na chave pública
 sudo wget -O /etc/pki/containers/aurora-mt7902.pub \
-  https://raw.githubusercontent.com/LLawli/aurora-mt7902/main/cosign.pub
+  https://raw.githubusercontent.com/LLawli/uBlue-mt7902/main/cosign.pub
 
 # Passo 2 — registrar policy de verificação (uma vez)
 sudo tee /etc/containers/registries.d/aurora-mt7902.yaml > /dev/null <<EOF

@@ -1,4 +1,4 @@
-export image_name := env("IMAGE_NAME", "aurora-mt7902") # output image name, usually same as repo name, change as needed
+export image_name := env("IMAGE_NAME", "aurora-mt7902") # default output image name; override with IMAGE_NAME=bluefin-dx-mt7902 to build the GNOME variant
 export default_tag := env("DEFAULT_TAG", "latest")
 export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest")
 

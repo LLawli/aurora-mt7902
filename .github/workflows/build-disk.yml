@@ -29,14 +29,13 @@ env:
   DEFAULT_TAG: "latest"
   BIB_IMAGE: "quay.io/centos-bootc/bootc-image-builder:latest"
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ matrix.image.name }}-${{ matrix.disk-type }}
-  cancel-in-progress: true
-
 jobs:
   build:
     name: Build ${{ matrix.disk-type }} for ${{ matrix.image.name }}
     runs-on: ${{ inputs.platform == 'amd64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ matrix.image.name }}-${{ matrix.disk-type }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:

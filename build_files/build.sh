@@ -132,7 +132,7 @@ rm -rf /var/cache/dnf /var/tmp/* /usr/src/kernels/* /tmp/mt7902-*
 # Sanity final por variant: confirma que pacotes essenciais do desktop NÃO
 # foram removidos. Lista varia entre Aurora (KDE) e Bluefin (GNOME).
 case "${VARIANT:-aurora}" in
-    aurora)  DESKTOP_PKGS=(plasma-workspace plasma-breeze sddm-wayland-plasma) ;;
+    aurora)  DESKTOP_PKGS=(plasma-workspace plasma-breeze plasma-login-manager) ;;
     bluefin) DESKTOP_PKGS=(gnome-shell gdm) ;;
     *) echo "FALHA: VARIANT desconhecido: ${VARIANT}"; exit 1 ;;
 esac

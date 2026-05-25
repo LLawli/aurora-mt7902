@@ -2,7 +2,7 @@
 
 > [English](README.md) · **Português (Brasil)**
 
-Imagens custom Universal Blue com os drivers MediaTek **MT7902** WiFi+Bluetooth pré-compilados, firmware instalado e módulos assinados para Secure Boot.
+Imagens custom Universal Blue com os drivers MediaTek **MT7902** WiFi+Bluetooth pré-compilados, firmware instalado e módulos assinados para Secure Boot...
 
 | Imagem | Base | Desktop | GHCR |
 |---|---|---|---|
